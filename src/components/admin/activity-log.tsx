@@ -1,10 +1,9 @@
-
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Plus, Edit, Trash2, Users, Calendar, Newspaper, BookMarked } from 'lucide-react';
-import { getActivities } from '@/lib/admin-activity';
+import { getActivities } from '@/lib/data';
 import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
 import type { Activity } from '@/lib/types';
@@ -69,11 +68,17 @@ export function ActivityLog() {
     const [activities, setActivities] = useState<Activity[]>([]);
 
     useEffect(() => {
-        setActivities(getActivities());
-        
+        // Fetch activities and update state
+        const fetchAndSetActivities = async () => {
+            const fetchedActivities = await getActivities();
+            setActivities(fetchedActivities);
+        };
+
+        fetchAndSetActivities();
+
         // Refresh activities every 5 seconds
         const interval = setInterval(() => {
-            setActivities(getActivities());
+            fetchAndSetActivities();
         }, 5000);
 
         return () => clearInterval(interval);

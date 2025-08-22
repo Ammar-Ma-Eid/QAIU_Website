@@ -1,30 +1,12 @@
+import { Activity } from './types';
+import { addActivity as dbAddActivity, getActivities } from './data';
 
-import type { Activity } from './types';
-
-// In-memory storage for activities (in production, this would be a database)
-let activities: Activity[] = [];
-
-export function addActivity(activity: Omit<Activity, 'id' | 'timestamp'>) {
-  const newActivity: Activity = {
-    ...activity,
-    id: Math.random().toString(36).substr(2, 9),
-    timestamp: new Date().toISOString(),
-  };
-  
-  activities.unshift(newActivity);
-  
-  // Keep only the last 50 activities
-  if (activities.length > 50) {
-    activities = activities.slice(0, 50);
-  }
-  
-  return newActivity;
+// Get recent activities
+export async function getRecentActivities(): Promise<Activity[]> {
+    return await getActivities();
 }
 
-export function getActivities(): Activity[] {
-  return activities;
-}
-
-export function clearActivities() {
-  activities = [];
+// Add new activity
+export async function addActivity(activity: Omit<Activity, 'id' | 'timestamp'>): Promise<void> {
+    await dbAddActivity(activity);
 }
