@@ -2,10 +2,20 @@ export type Member = {
   id: string;
   name: string;
   role: string;
+  category: 'leader' | 'board';
   imageUrl: string;
   dataAiHint: string;
   email: string;
   linkedinUrl: string;
+};
+
+export type Activity = {
+  id: string;
+  action: 'created' | 'updated' | 'deleted';
+  entity: 'member' | 'event' | 'blog' | 'glossary';
+  entityName: string;
+  timestamp: string;
+  details?: string;
 };
 
 export type Event = {

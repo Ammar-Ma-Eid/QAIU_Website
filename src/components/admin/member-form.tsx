@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { addMember, updateMember } from "@/app/admin/actions"
 import type { Member } from "@/lib/types"
@@ -23,7 +24,10 @@ import { DialogClose } from "@/components/ui/dialog"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  role: z.string().min(2, "Role must be at least 2 characters."),
+  role: z.string().min(1, "Please select a role."),
+  category: z.enum(['leader', 'board'], {
+    required_error: "Please select a category.",
+  }),
   email: z.string().email("Invalid email address."),
   linkedinUrl: z.string().url("Please enter a valid URL.").or(z.literal("")).optional(),
   imageUrl: z.string().optional(),
@@ -44,6 +48,7 @@ export function MemberForm({ member }: MemberFormProps) {
     defaultValues: {
       name: member?.name || "",
       role: member?.role || "",
+      category: member?.category || "board",
       email: member?.email || "",
       linkedinUrl: member?.linkedinUrl || "",
       imageUrl: member?.imageUrl || "",
@@ -101,13 +106,57 @@ export function MemberForm({ member }: MemberFormProps) {
           />
           <FormField
             control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="leader">Leader</SelectItem>
+                    <SelectItem value="board">Board Member</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="role"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. President" {...field} />
-                </FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {form.watch("category") === "leader" ? (
+                      <>
+                        <SelectItem value="President">President</SelectItem>
+                        <SelectItem value="Supervisor">Supervisor</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="Vice President">Vice President</SelectItem>
+                        <SelectItem value="Secretary">Secretary</SelectItem>
+                        <SelectItem value="Treasurer">Treasurer</SelectItem>
+                        <SelectItem value="Marketing Director">Marketing Director</SelectItem>
+                        <SelectItem value="Technical Lead">Technical Lead</SelectItem>
+                        <SelectItem value="Research Coordinator">Research Coordinator</SelectItem>
+                        <SelectItem value="Events Coordinator">Events Coordinator</SelectItem>
+                        <SelectItem value="Board Member">Board Member</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

@@ -127,16 +127,89 @@ export default async function AdminDashboardPage() {
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <div className="space-y-3">
-                                            <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4">
-                                                <PlusCircle className="h-5 w-5" />
-                                                <span className="text-base font-medium">Add Member</span>
-                                            </Button>
-                                            <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4">
-                                                <Calendar className="h-5 w-5" />
-                                                <span className="text-base font-medium">Add Event</span>
-                                            </Button>
-                                            <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4">
-                                                <Newspaper className="h-5 w-5" />
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4 hover:bg-primary/5 transition-colors">
+                                                        <PlusCircle className="h-5 w-5 text-primary" />
+                                                        <div className="text-left">
+                                                            <span className="text-base font-medium block">Add Member</span>
+                                                            <span className="text-xs text-muted-foreground">Add new team member</span>
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-md">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add New Member</DialogTitle>
+                                                        <DialogDescription>
+                                                            Add a new member to the QAIU team.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <MemberForm />
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4 hover:bg-primary/5 transition-colors">
+                                                        <Calendar className="h-5 w-5 text-primary" />
+                                                        <div className="text-left">
+                                                            <span className="text-base font-medium block">Add Event</span>
+                                                            <span className="text-xs text-muted-foreground">Create new event</span>
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-md">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add New Event</DialogTitle>
+                                                        <DialogDescription>
+                                                            Schedule a new event or meeting.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <EventForm />
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4 hover:bg-primary/5 transition-colors">
+                                                        <Newspaper className="h-5 w-5 text-primary" />
+                                                        <div className="text-left">
+                                                            <span className="text-base font-medium block">Add Blog Post</span>
+                                                            <span className="text-xs text-muted-foreground">Write new article</span>
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-2xl">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add New Blog Post</DialogTitle>
+                                                        <DialogDescription>
+                                                            Create a new blog post or article.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <BlogPostForm />
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4 hover:bg-primary/5 transition-colors">
+                                                        <BookMarked className="h-5 w-5 text-primary" />
+                                                        <div className="text-left">
+                                                            <span className="text-base font-medium block">Add Glossary Term</span>
+                                                            <span className="text-xs text-muted-foreground">Define new term</span>
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-md">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add Glossary Term</DialogTitle>
+                                                        <DialogDescription>
+                                                            Add a new term to the glossary.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <GlossaryTermForm />
+                                                </DialogContent>
+                                            </Dialog>
                                                 <span className="text-base font-medium">Add Post</span>
                                             </Button>
                                             <Button variant="outline" className="w-full h-16 flex items-center justify-start gap-3 px-4">
@@ -177,6 +250,7 @@ export default async function AdminDashboardPage() {
                                             <TableRow>
                                                 <TableHead>Name</TableHead>
                                                 <TableHead>Role</TableHead>
+                                                <TableHead>Category</TableHead>
                                                 <TableHead>Email</TableHead>
                                                 <TableHead>LinkedIn</TableHead>
                                                 <TableHead className="text-right">Actions</TableHead>
@@ -187,7 +261,19 @@ export default async function AdminDashboardPage() {
                                                 members.map((member) => (
                                                     <TableRow key={member.id}>
                                                         <TableCell className="font-medium">{member.name}</TableCell>
-                                                        <TableCell>{member.role}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                {member.role}
+                                                                {(member.role === 'President' || member.role === 'Supervisor') && (
+                                                                    <Badge variant="secondary" className="text-xs">Leader</Badge>
+                                                                )}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant={member.category === 'leader' ? 'default' : 'outline'}>
+                                                                {member.category === 'leader' ? 'Leader' : 'Board'}
+                                                            </Badge>
+                                                        </TableCell>
                                                         <TableCell>{member.email}</TableCell>
                                                         <TableCell>
                                                             {member.linkedinUrl && member.linkedinUrl !== '#' ? (
