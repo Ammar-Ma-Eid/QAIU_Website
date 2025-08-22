@@ -70,7 +70,7 @@ export default async function AboutPage() {
               <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg">
                 <CardHeader>
                   <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-primary/20">
-                    <Image src={supervisor.imageUrl} alt={supervisor.name} fill style={{ objectFit: 'cover' }} data-ai-hint={supervisor.dataAiHint} />
+                    <Image src={supervisor.imageUrl} alt={supervisor.name} fill sizes="160px" style={{ objectFit: 'cover' }} data-ai-hint={supervisor.dataAiHint} />
                   </div>
                 </CardHeader>
                 <CardContent>
