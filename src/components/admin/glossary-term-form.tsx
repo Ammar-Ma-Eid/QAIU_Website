@@ -37,11 +37,12 @@ type GlossaryTermFormValues = z.infer<typeof formSchema>
 
 interface GlossaryTermFormProps {
   term?: GlossaryTerm
+  onSuccess?: () => void
 }
 
 const categories = ["Fundamental Concept", "Algorithm", "Hardware", "Theory"];
 
-export function GlossaryTermForm({ term: glossaryTerm }: GlossaryTermFormProps) {
+export function GlossaryTermForm({ term: glossaryTerm, onSuccess }: GlossaryTermFormProps) {
   const { toast } = useToast()
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const form = useForm<GlossaryTermFormValues>({
@@ -71,6 +72,7 @@ export function GlossaryTermForm({ term: glossaryTerm }: GlossaryTermFormProps) 
         })
       }
       closeButtonRef.current?.click()
+      onSuccess?.(); // Call onSuccess if provided
     } catch (error) {
        toast({
         title: "An Error Occurred",

@@ -8,9 +8,8 @@ import { Button } from '@/components/ui/button';
 
 export default async function AboutPage() {
   const members: Member[] = await getMembers();
-  const supervisor = members.find(m => m.role === 'Supervisor');
-  const president = members.find(m => m.role === 'President');
-  const otherMembers = members.filter(m => m.role !== 'Supervisor' && m.role !== 'President');
+  const leaders = members.filter(m => m.category === 'leader');
+  const boardMembers = members.filter(m => m.category === 'board');
 
   return (
     <div className="relative overflow-hidden">
@@ -66,59 +65,36 @@ export default async function AboutPage() {
         <section className="mb-20">
           <h2 className="font-headline text-3xl font-bold text-center mb-10">Our Leadership</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {supervisor && (
-              <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg">
+            {leaders.map((leader) => (
+              <Card key={leader.id} className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg">
                 <CardHeader>
                   <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-primary/20">
-                    <Image src={supervisor.imageUrl} alt={supervisor.name} fill sizes="160px" style={{ objectFit: 'cover' }} data-ai-hint={supervisor.dataAiHint} />
+                    <Image src={leader.imageUrl} alt={leader.name} fill sizes="160px" style={{ objectFit: 'cover' }} data-ai-hint={leader.dataAiHint} />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardTitle className="font-headline text-2xl">{supervisor.name}</CardTitle>
-                  <Badge variant="secondary" className="mt-2 text-base">{supervisor.role}</Badge>
+                  <CardTitle className="font-headline text-2xl">{leader.name}</CardTitle>
+                  <Badge variant={leader.role === 'President' ? 'default' : 'secondary'} className="mt-2 text-base">{leader.role}</Badge>
                   <div className="flex justify-center gap-4 mt-4">
-                    <a href={`mailto:${supervisor.email}`} className="text-muted-foreground hover:text-primary">
+                    <a href={`mailto:${leader.email}`} className="text-muted-foreground hover:text-primary">
                       <span className="sr-only">Email</span>
                       <Mail className="h-5 w-5" />
                     </a>
-                    <a href={supervisor.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                    <a href={leader.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                       <span className="sr-only">LinkedIn</span>
                       <Linkedin className="h-5 w-5" />
                     </a>
                   </div>
                 </CardContent>
               </Card>
-            )}
-            {president && (
-              <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg">
-                <CardHeader>
-                  <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-primary/20">
-                    <Image src={president.imageUrl} alt={president.name} fill style={{ objectFit: 'cover' }} data-ai-hint={president.dataAiHint} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardTitle className="font-headline text-2xl">{president.name}</CardTitle>
-                  <Badge variant="default" className="mt-2 text-base">{president.role}</Badge>
-                  <div className="flex justify-center gap-4 mt-4">
-                    <a href={`mailto:${president.email}`} className="text-muted-foreground hover:text-primary">
-                      <span className="sr-only">Email</span>
-                      <Mail className="h-5 w-5" />
-                    </a>
-                    <a href={president.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                      <span className="sr-only">LinkedIn</span>
-                      <Linkedin className="h-5 w-5" />
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            ))}
           </div>
         </section>
 
         <section>
-          <h2 className="font-headline text-3xl font-bold text-center mb-10">Our Team</h2>
+          <h2 className="font-headline text-3xl font-bold text-center mb-10">Our Board</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-            {otherMembers.map((member) => (
+            {boardMembers.map((member) => (
               <Card key={member.id} className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center pt-6 shadow-lg">
                 <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-primary/20">
                   <Image src={member.imageUrl} alt={member.name} fill style={{ objectFit: 'cover' }} data-ai-hint={member.dataAiHint} />

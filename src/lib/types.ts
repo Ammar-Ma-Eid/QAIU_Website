@@ -1,10 +1,25 @@
+// Environment variable type definitions
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      // Supabase
+      NEXT_PUBLIC_SUPABASE_URL: string
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: string
+      
+      // Add other environment variables here as needed
+      // DATABASE_URL?: string
+      // API_KEY?: string
+      // APP_SECRET?: string
+    }
+  }
+}
+
 export type Member = {
   id: string;
   name: string;
   role: string;
   category: 'leader' | 'board';
   imageUrl: string;
-  dataAiHint: string;
   email: string;
   linkedinUrl: string;
 };
@@ -12,7 +27,7 @@ export type Member = {
 export type Activity = {
   id: string;
   action: 'created' | 'updated' | 'deleted';
-  entity: 'member' | 'event' | 'blog' | 'glossary';
+  entity: 'member' | 'event' | 'blog' | 'glossary' | 'contact message';
   entityName: string;
   timestamp: string;
   details?: string;
@@ -24,9 +39,8 @@ export type Event = {
   date: string;
   description: string;
   imageUrl: string;
-  dataAiHint: string;
   location: string;
-  gallery: Array<{ src: string; alt: string; dataAiHint: string; }>;
+  gallery: Array<{ src: string; alt: string; }>;
 };
 
 export type BlogPost = {
@@ -37,7 +51,6 @@ export type BlogPost = {
   excerpt: string;
   content: string;
   imageUrl: string;
-  dataAiHint: string;
 };
 
 export type GlossaryTerm = {

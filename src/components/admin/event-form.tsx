@@ -33,11 +33,9 @@ const formSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters."),
   location: z.string().min(2, "Location must be at least 2 characters."),
   imageUrl: z.string().optional(),
-  dataAiHint: z.string().optional(),
   gallery: z.array(z.object({
     src: z.string().optional(),
     alt: z.string().min(1, { message: "Alt text cannot be empty." }),
-    dataAiHint: z.string().optional(),
   })).optional(),
 })
 
@@ -45,9 +43,10 @@ type EventFormValues = z.infer<typeof formSchema>
 
 interface EventFormProps {
   event?: Event
+  onSuccess?: () => void
 }
 
-export function EventForm({ event }: EventFormProps) {
+export function EventForm({ event, onSuccess }: EventFormProps) {
   const { toast } = useToast()
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const form = useForm<EventFormValues>({
@@ -58,7 +57,6 @@ export function EventForm({ event }: EventFormProps) {
       description: event?.description || "",
       location: event?.location || "",
       imageUrl: event?.imageUrl || "",
-      dataAiHint: event?.dataAiHint || "",
       gallery: event?.gallery || [],
     },
   })
@@ -91,6 +89,7 @@ export function EventForm({ event }: EventFormProps) {
         })
       }
       closeButtonRef.current?.click()
+      onSuccess?.(); // Call onSuccess if provided
     } catch (error) {
        toast({
         title: "An Error Occurred",
@@ -191,19 +190,6 @@ export function EventForm({ event }: EventFormProps) {
             )}
             <FormMessage />
           </FormItem>
-          <FormField
-            control={form.control}
-            name="dataAiHint"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Main Image AI Hint (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. hackathon event" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           
           {/* Gallery Section */}
           <div className="space-y-2">
@@ -266,19 +252,6 @@ export function EventForm({ event }: EventFormProps) {
                                           </FormItem>
                                       )}
                                   />
-                                  <FormField
-                                      control={form.control}
-                                      name={`gallery.${index}.dataAiHint`}
-                                      render={({ field }) => (
-                                          <FormItem>
-                                          <FormLabel>Image AI Hint (Optional)</FormLabel>
-                                          <FormControl>
-                                              <Input placeholder="e.g. students presenting" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
                               </div>
                               <Button
                                   type="button"
@@ -298,7 +271,7 @@ export function EventForm({ event }: EventFormProps) {
                       variant="outline"
                       size="sm"
                       className="mt-2"
-                      onClick={() => append({ src: '', alt: '', dataAiHint: '' })}
+                      onClick={() => append({ src: '', alt: '' })}
                   >
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Add Gallery Image

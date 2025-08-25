@@ -12,10 +12,19 @@ import DynamicIcon from '@/components/dynamic-icon';
 import type { Event, GlossaryTerm } from '@/lib/types';
 
 export default async function Home() {
-  const [upcomingEvents, featuredGlossaryTerms]: [Event[], GlossaryTerm[]] = await Promise.all([
-    getUpcomingEvents(),
-    getFeaturedGlossaryTerms()
-  ]);
+  // Handle potential errors when fetching data
+  let upcomingEvents: Event[] = [];
+  let featuredGlossaryTerms: GlossaryTerm[] = [];
+  
+  try {
+    [upcomingEvents, featuredGlossaryTerms] = await Promise.all([
+      getUpcomingEvents(),
+      getFeaturedGlossaryTerms()
+    ]);
+  } catch (error) {
+    console.error('Error fetching data for homepage:', error);
+    // Continue with empty arrays
+  }
 
   const quantumJobs = [
     {

@@ -1,5 +1,5 @@
 
-# QAIU Admin System
+# QAIU 
 
 A modern admin dashboard for managing QAIU website content with Supabase backend.
 

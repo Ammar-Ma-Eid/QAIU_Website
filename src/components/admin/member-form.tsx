@@ -31,13 +31,13 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address."),
   linkedinUrl: z.string().url("Please enter a valid URL.").or(z.literal("")).optional(),
   imageUrl: z.string().optional(),
-  dataAiHint: z.string().optional(),
 })
 
 type MemberFormValues = z.infer<typeof formSchema>
 
 interface MemberFormProps {
   member?: Member
+  onSuccess?: () => void
 }
 
 export function MemberForm({ member }: MemberFormProps) {
@@ -52,7 +52,6 @@ export function MemberForm({ member }: MemberFormProps) {
       email: member?.email || "",
       linkedinUrl: member?.linkedinUrl || "",
       imageUrl: member?.imageUrl || "",
-      dataAiHint: member?.dataAiHint || "",
     },
   })
 
@@ -63,7 +62,7 @@ export function MemberForm({ member }: MemberFormProps) {
     };
     try {
       if (member) {
-        await updateMember(member.id, submissionData) 
+        await updateMember(member.id, submissionData)
         toast({
           title: "Member Updated",
           description: `Details for ${data.name} have been updated.`,
@@ -77,7 +76,7 @@ export function MemberForm({ member }: MemberFormProps) {
       }
       closeButtonRef.current?.click()
     } catch (error) {
-       toast({
+      toast({
         title: "An Error Occurred",
         description: "Something went wrong. Please check the console and try again.",
         variant: "destructive",
@@ -131,32 +130,23 @@ export function MemberForm({ member }: MemberFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                {form.watch("category") === "leader" ? (
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="President">President</SelectItem>
+                      <SelectItem value="Supervisor">Supervisor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
+                    <Input placeholder="e.g. Marketing Director" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {form.watch("category") === "leader" ? (
-                      <>
-                        <SelectItem value="President">President</SelectItem>
-                        <SelectItem value="Supervisor">Supervisor</SelectItem>
-                      </>
-                    ) : (
-                      <>
-                        <SelectItem value="Vice President">Vice President</SelectItem>
-                        <SelectItem value="Secretary">Secretary</SelectItem>
-                        <SelectItem value="Treasurer">Treasurer</SelectItem>
-                        <SelectItem value="Marketing Director">Marketing Director</SelectItem>
-                        <SelectItem value="Technical Lead">Technical Lead</SelectItem>
-                        <SelectItem value="Research Coordinator">Research Coordinator</SelectItem>
-                        <SelectItem value="Events Coordinator">Events Coordinator</SelectItem>
-                        <SelectItem value="Board Member">Board Member</SelectItem>
-                      </>
-                    )}
-                  </SelectContent>
-                </Select>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -221,21 +211,8 @@ export function MemberForm({ member }: MemberFormProps) {
             <FormMessage />
           </FormItem>
 
-          <FormField
-            control={form.control}
-            name="dataAiHint"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image AI Hint (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. person smiling" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+            {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         </form>
       </Form>

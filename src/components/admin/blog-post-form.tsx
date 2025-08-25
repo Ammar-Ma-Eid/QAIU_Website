@@ -32,16 +32,16 @@ const formSchema = z.object({
   excerpt: z.string().min(10, "Excerpt must be at least 10 characters."),
   content: z.string().min(20, "Content must be at least 20 characters."),
   imageUrl: z.string().optional(),
-  dataAiHint: z.string().optional(),
 })
 
 type BlogPostFormValues = z.infer<typeof formSchema>
 
 interface BlogPostFormProps {
   post?: BlogPost
+  onSuccess?: () => void
 }
 
-export function BlogPostForm({ post }: BlogPostFormProps) {
+export function BlogPostForm({ post, onSuccess }: BlogPostFormProps) {
   const { toast } = useToast()
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const form = useForm<BlogPostFormValues>({
@@ -53,7 +53,6 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
       excerpt: post?.excerpt || "",
       content: post?.content || "",
       imageUrl: post?.imageUrl || "",
-      dataAiHint: post?.dataAiHint || "",
     },
   })
 
@@ -79,6 +78,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
         })
       }
       closeButtonRef.current?.click()
+      onSuccess?.(); // Call onSuccess if provided
     } catch (error) {
        toast({
         title: "An Error Occurred",
@@ -192,19 +192,6 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
             )}
             <FormMessage />
           </FormItem>
-          <FormField
-            control={form.control}
-            name="dataAiHint"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image AI Hint (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. quantum computer" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>

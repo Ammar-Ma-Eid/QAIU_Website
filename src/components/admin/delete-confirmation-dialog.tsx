@@ -16,23 +16,23 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from 'next/navigation'
 
-export function DeleteConfirmationDialog({ 
-  trigger, 
+export function DeleteConfirmationDialog({
+  trigger,
   title = "Are you sure?",
   description,
-  deleteAction 
-}: { 
-  trigger: React.ReactNode, 
+  deleteAction
+}: {
+  trigger: React.ReactNode,
   title?: string,
   description: string,
-  deleteAction: () => Promise<void> 
+  deleteAction: () => Promise<void>
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
   const router = useRouter()
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     startTransition(async () => {
       try {
         await deleteAction()
@@ -41,7 +41,8 @@ export function DeleteConfirmationDialog({
           description: "The item has been successfully deleted.",
         })
         setIsOpen(false)
-        router.refresh()
+        // Force a hard refresh to ensure data is updated
+        window.location.reload()
       } catch (error) {
         console.error(error)
         toast({

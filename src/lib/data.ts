@@ -1,6 +1,7 @@
 
 import { Member, Event, BlogPost, GlossaryTerm, Activity } from './types';
-import { supabase } from './supabase';
+import { supabase, supabaseAdmin } from './supabase';
+import { shouldUseServiceRole } from './admin-context';
 
 export async function getMembers(): Promise<Member[]> {
     const { data, error } = await supabase
@@ -17,7 +18,8 @@ export async function getMembers(): Promise<Member[]> {
 }
 
 export async function addMember(member: Omit<Member, 'id'>): Promise<Member | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('members')
         .insert([member])
         .select()
@@ -32,7 +34,8 @@ export async function addMember(member: Omit<Member, 'id'>): Promise<Member | nu
 }
 
 export async function updateMember(id: string, member: Partial<Member>): Promise<Member | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('members')
         .update(member)
         .eq('id', id)
@@ -48,7 +51,8 @@ export async function updateMember(id: string, member: Partial<Member>): Promise
 }
 
 export async function deleteMemberById(id: string): Promise<boolean> {
-    const { error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { error } = await client
         .from('members')
         .delete()
         .eq('id', id);
@@ -104,7 +108,8 @@ export async function getEventById(id: string): Promise<Event | null> {
 }
 
 export async function addEvent(event: Omit<Event, 'id'>): Promise<Event | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('events')
         .insert([event])
         .select()
@@ -119,7 +124,8 @@ export async function addEvent(event: Omit<Event, 'id'>): Promise<Event | null> 
 }
 
 export async function updateEvent(id: string, event: Partial<Event>): Promise<Event | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('events')
         .update(event)
         .eq('id', id)
@@ -135,7 +141,8 @@ export async function updateEvent(id: string, event: Partial<Event>): Promise<Ev
 }
 
 export async function deleteEventById(id: string): Promise<boolean> {
-    const { error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { error } = await client
         .from('events')
         .delete()
         .eq('id', id);
@@ -173,7 +180,8 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
 }
 
 export async function addBlogPost(blogPost: Omit<BlogPost, 'id'>): Promise<BlogPost | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('blog_posts')
         .insert([blogPost])
         .select()
@@ -188,7 +196,8 @@ export async function addBlogPost(blogPost: Omit<BlogPost, 'id'>): Promise<BlogP
 }
 
 export async function updateBlogPost(id: string, blogPost: Partial<BlogPost>): Promise<BlogPost | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('blog_posts')
         .update(blogPost)
         .eq('id', id)
@@ -204,7 +213,8 @@ export async function updateBlogPost(id: string, blogPost: Partial<BlogPost>): P
 }
 
 export async function deleteBlogPostById(id: string): Promise<boolean> {
-    const { error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { error } = await client
         .from('blog_posts')
         .delete()
         .eq('id', id);
@@ -271,7 +281,8 @@ export async function getGlossaryTermById(id: string): Promise<GlossaryTerm | nu
 }
 
 export async function addGlossaryTerm(term: Omit<GlossaryTerm, 'id'>): Promise<GlossaryTerm | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('glossary_terms')
         .insert([term])
         .select()
@@ -286,7 +297,8 @@ export async function addGlossaryTerm(term: Omit<GlossaryTerm, 'id'>): Promise<G
 }
 
 export async function updateGlossaryTerm(id: string, term: Partial<GlossaryTerm>): Promise<GlossaryTerm | null> {
-    const { data, error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { data, error } = await client
         .from('glossary_terms')
         .update(term)
         .eq('id', id)
@@ -302,7 +314,8 @@ export async function updateGlossaryTerm(id: string, term: Partial<GlossaryTerm>
 }
 
 export async function deleteGlossaryTermById(id: string): Promise<boolean> {
-    const { error } = await supabase
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { error } = await client
         .from('glossary_terms')
         .delete()
         .eq('id', id);
@@ -326,8 +339,9 @@ export async function getActivities(): Promise<Activity[]> {
     return data || [];
 }
 
-export async function addActivity(activity: Omit<Activity, 'id' | 'timestamp'>): Promise<void> {
-    const { error } = await supabase
+export async function addActivity(activity: Omit<Activity, 'id' | 'timestamp'>): Promise<boolean> {
+    const client = shouldUseServiceRole() ? supabaseAdmin : supabase;
+    const { error } = await client
         .from('activities')
         .insert([{
             ...activity,
@@ -336,5 +350,8 @@ export async function addActivity(activity: Omit<Activity, 'id' | 'timestamp'>):
     
     if (error) {
         console.error('Error adding activity:', error);
+        return false;
     }
+    
+    return true;
 }
