@@ -5,7 +5,7 @@ declare global {
       // Supabase
       NEXT_PUBLIC_SUPABASE_URL: string
       NEXT_PUBLIC_SUPABASE_ANON_KEY: string
-      
+
       // Add other environment variables here as needed
       // DATABASE_URL?: string
       // API_KEY?: string

@@ -32,7 +32,6 @@ export default async function AboutPage() {
                     alt="Alamein International University Logo"
                     fill
                     className="object-contain"
-                    data-ai-hint="university logo"
                   />
                 </div>
               </div>
@@ -42,7 +41,6 @@ export default async function AboutPage() {
                   alt="Alamein International University Campus"
                   fill
                   className="object-cover"
-                  data-ai-hint="university campus"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8">
                   <h3 className="font-headline text-2xl font-bold mb-2 text-white">Alamein International University</h3>
@@ -66,15 +64,15 @@ export default async function AboutPage() {
           <h2 className="font-headline text-3xl font-bold text-center mb-10">Our Leadership</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {leaders.map((leader) => (
-              <Card key={leader.id} className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg">
+              <Card key={leader.id} className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center shadow-lg max-w-md mx-auto">
                 <CardHeader>
                   <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-primary/20">
-                    <Image src={leader.imageUrl} alt={leader.name} fill sizes="160px" style={{ objectFit: 'cover' }} data-ai-hint={leader.dataAiHint} />
+                    <Image src={leader.imageUrl} alt={leader.name} fill sizes="160px" style={{ objectFit: 'cover' }} />
                   </div>
                 </CardHeader>
                 <CardContent>
                   <CardTitle className="font-headline text-2xl">{leader.name}</CardTitle>
-                  <Badge variant={leader.role === 'President' ? 'default' : 'secondary'} className="mt-2 text-base">{leader.role}</Badge>
+                  <Badge variant="default" className="mt-2 text-base">{leader.role}</Badge>
                   <div className="flex justify-center gap-4 mt-4">
                     <a href={`mailto:${leader.email}`} className="text-muted-foreground hover:text-primary">
                       <span className="sr-only">Email</span>
@@ -97,7 +95,7 @@ export default async function AboutPage() {
             {boardMembers.map((member) => (
               <Card key={member.id} className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden text-center pt-6 shadow-lg">
                 <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-primary/20">
-                  <Image src={member.imageUrl} alt={member.name} fill style={{ objectFit: 'cover' }} data-ai-hint={member.dataAiHint} />
+                  <Image src={member.imageUrl} alt={member.name} fill style={{ objectFit: 'cover' }} />
                 </div>
                 <CardContent className="pt-4 px-2 pb-4">
                   <h3 className="font-headline text-lg font-semibold">{member.name}</h3>
