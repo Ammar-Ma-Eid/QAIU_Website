@@ -66,9 +66,46 @@ export default function AdminDashboardPage() {
         fetchData();
     }, []);
 
-    const handleRefresh = () => {
-        fetchData();
-    };
+const handleRefresh = async () => {
+    await fetchData();
+};
+
+// Wrapper functions to handle the return values from delete actions
+    const handleDeleteMember = async (id: string): Promise<void> => {
+    const result = await deleteMember(id);
+    if (result.success) {
+        await fetchData();
+    } else {
+        throw new Error(result.message);
+    }
+};
+
+const handleDeleteEvent = async (id: string): Promise<void> => {
+    const result = await deleteEvent(id);
+    if (result.success) {
+        await fetchData();
+    } else {
+        throw new Error(result.message);
+    }
+};
+
+const handleDeleteBlogPost = async (id: string): Promise<void> => {
+    const result = await deleteBlogPost(id);
+    if (result.success) {
+        await fetchData();
+    } else {
+        throw new Error(result.message);
+    }
+};
+
+const handleDeleteGlossaryTerm = async (id: string): Promise<void> => {
+    const result = await deleteGlossaryTerm(id);
+    if (result.success) {
+        await fetchData();
+    } else {
+        throw new Error(result.message);
+    }
+};
 
     if (loading) {
         return (
@@ -111,7 +148,7 @@ export default function AdminDashboardPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <RefreshButton onRefresh={handleRefresh} />
+                            <RefreshButton />
                             <LogoutButton />
                         </div>
                     </div>
@@ -360,7 +397,7 @@ export default function AdminDashboardPage() {
                                                                 </Button>
                                                             }
                                                             description={`This action cannot be undone. This will permanently delete ${member.name} from the database.`}
-                                                            deleteAction={deleteMember.bind(null, member.id)}
+                                                            deleteAction={() => handleDeleteMember(member.id)}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
@@ -439,7 +476,7 @@ export default function AdminDashboardPage() {
                                                                     </Button>
                                                                 }
                                                                 description={`This will permanently delete "${event.title}" from the database.`}
-                                                                deleteAction={deleteEvent.bind(null, event.id)}
+                                                            deleteAction={() => handleDeleteEvent(event.id)}
                                                             />
                                                         </TableCell>
                                                     </TableRow>
@@ -512,7 +549,7 @@ export default function AdminDashboardPage() {
                                                                 </Button>
                                                             }
                                                             description={`This will permanently delete "${post.title}" from the database.`}
-                                                            deleteAction={deleteBlogPost.bind(null, post.id)}
+                                                            deleteAction={() => handleDeleteBlogPost(post.id)}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
@@ -579,7 +616,7 @@ export default function AdminDashboardPage() {
                                                                 </Button>
                                                             }
                                                             description={`This will permanently delete "${term.term}" from the glossary.`}
-                                                            deleteAction={deleteGlossaryTerm.bind(null, term.id)}
+                                                            deleteAction={() => handleDeleteGlossaryTerm(term.id)}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
